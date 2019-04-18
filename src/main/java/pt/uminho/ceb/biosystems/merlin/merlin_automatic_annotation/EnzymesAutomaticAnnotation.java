@@ -14,9 +14,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import es.uvigo.ei.aibench.core.operation.annotation.Cancel;
 import es.uvigo.ei.aibench.core.operation.annotation.Direction;
@@ -324,10 +325,10 @@ public class EnzymesAutomaticAnnotation {
 
 			int rowCounter = 0, columnCounter = 0;
 
-			HSSFWorkbook wb = new HSSFWorkbook();
-			HSSFSheet sheet = wb.createSheet(EnzymesAutomaticAnnotation.class.getSimpleName().toString());
+			Workbook  wb = new XSSFWorkbook();
+			Sheet sheet = wb.createSheet(EnzymesAutomaticAnnotation.class.getSimpleName().toString());
 
-			HSSFRow excelRow = sheet.createRow(rowCounter++);
+			Row excelRow = sheet.createRow(rowCounter++);
 
 			excelRow.createCell(columnCounter++).setCellValue("genes");
 			excelRow.createCell(columnCounter++).setCellValue("annotation");
@@ -397,7 +398,7 @@ public class EnzymesAutomaticAnnotation {
 			excelRow.createCell(columnCounter++).setCellValue("Accept default annotation if no match is found");
 			excelRow.createCell(columnCounter++).setCellValue(Boolean.valueOf(this.inputAcceptDefault));
 
-			String excelFileName = path.concat(EnzymesAutomaticAnnotation.class.getSimpleName().concat("_").concat(blastDatabase).concat(hour24).concat("_").concat(min).concat("_").concat(day).concat(".xls"));
+			String excelFileName = path.concat(EnzymesAutomaticAnnotation.class.getSimpleName().concat("_").concat(blastDatabase).concat(hour24).concat("_").concat(min).concat("_").concat(day).concat(".xlsx"));
 			FileOutputStream fileOut = new FileOutputStream(excelFileName);
 			wb.write(fileOut);
 			fileOut.flush();
