@@ -16,8 +16,8 @@ import es.uvigo.ei.aibench.workbench.InputGUI;
 import es.uvigo.ei.aibench.workbench.ParamsReceiver;
 import es.uvigo.ei.aibench.workbench.Workbench;
 import es.uvigo.ei.aibench.workbench.utilities.Utilities;
-import pt.uminho.ceb.biosystems.merlin.core.datatypes.annotation.EnzymesAnnotationDataInterface;
-import pt.uminho.ceb.biosystems.merlin.core.utilities.AIBenchUtils;
+import pt.uminho.ceb.biosystems.merlin.aibench.datatypes.annotation.AnnotationEnzymesAIB;
+import pt.uminho.ceb.biosystems.merlin.aibench.utilities.AIBenchUtils;
 import pt.uminho.ceb.biosystems.merlin.database.connector.databaseAPI.HomologyAPI;
 import pt.uminho.ceb.biosystems.merlin.database.connector.databaseAPI.ProjectAPI;
 import pt.uminho.ceb.biosystems.merlin.database.connector.datatypes.Connection;
@@ -25,7 +25,7 @@ import pt.uminho.ceb.biosystems.merlin.database.connector.datatypes.Connection;
 public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implements InputGUI{
 
 	private static final long serialVersionUID = 1L;
-	private EnzymesAnnotationDataInterface homologyDataContainer;
+	private AnnotationEnzymesAIB homologyDataContainer;
 	private javax.swing.JButton jButtonApply;
 	private javax.swing.JButton jButtonCancel;
 	private javax.swing.JCheckBox jCheckBox1;
@@ -119,9 +119,9 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 		workspaces = new String[projects.size()];
 		workspace = new JComboBox<>(projects.toArray(workspaces));
 
-		this.homologyDataContainer = (EnzymesAnnotationDataInterface) AIBenchUtils.getEntity(workspace.getSelectedItem().toString(), EnzymesAnnotationDataInterface.class);
-		homologyDataContainer.getProject().getTaxonomyID();
-		this.organism = homologyDataContainer.getProject().getOrganismName();
+		this.homologyDataContainer = (AnnotationEnzymesAIB) AIBenchUtils.getEntity(workspace.getSelectedItem().toString(), AnnotationEnzymesAIB.class);
+		homologyDataContainer.getWorkspace().getTaxonomyID();
+		this.organism = homologyDataContainer.getWorkspace().getOrganismName();
 
 		getAllOrganisms();
 
@@ -1382,7 +1382,7 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 					new ParamSpec("listInputColumn3", List.class, listInputColumn3, null),
 					new ParamSpec("listInputColumn4", List.class, listInputColumn4, null),
 					new ParamSpec("inputAcceptDefault", Boolean.class, inputAcceptDefault, null),
-					new ParamSpec("homologyDataContainer", EnzymesAnnotationDataInterface.class, homologyDataContainer, null),
+					new ParamSpec("homologyDataContainer", AnnotationEnzymesAIB.class, homologyDataContainer, null),
 			};
 
 			for (@SuppressWarnings("rawtypes") OperationDefinition def : Core.getInstance().getOperations()){

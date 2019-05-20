@@ -25,14 +25,14 @@ import es.uvigo.ei.aibench.core.operation.annotation.Operation;
 import es.uvigo.ei.aibench.core.operation.annotation.Port;
 import es.uvigo.ei.aibench.core.operation.annotation.Progress;
 import es.uvigo.ei.aibench.workbench.Workbench;
-import pt.uminho.ceb.biosystems.merlin.core.datatypes.DataTable;
-import pt.uminho.ceb.biosystems.merlin.core.datatypes.GenericDataTable;
-import pt.uminho.ceb.biosystems.merlin.core.datatypes.annotation.EnzymesAnnotationDataInterface;
-import pt.uminho.ceb.biosystems.merlin.core.gui.CustomGUI;
-import pt.uminho.ceb.biosystems.merlin.core.utilities.MerlinUtils;
+import pt.uminho.ceb.biosystems.merlin.aibench.datatypes.annotation.AnnotationEnzymesAIB;
+import pt.uminho.ceb.biosystems.merlin.aibench.gui.CustomGUI;
+import pt.uminho.ceb.biosystems.merlin.aibench.utilities.MerlinUtils;
+import pt.uminho.ceb.biosystems.merlin.aibench.utilities.TimeLeftProgress;
+import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceDataTable;
+import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceGenericDataTable;
 import pt.uminho.ceb.biosystems.merlin.database.connector.databaseAPI.HomologyAPI;
 import pt.uminho.ceb.biosystems.merlin.database.connector.datatypes.Connection;
-import pt.uminho.ceb.biosystems.merlin.utilities.TimeLeftProgress;
 import pt.uminho.ceb.biosystems.merlin.utilities.io.FileUtils;
 
 @Operation(name="enzymes automatic annotation", description="enzymes automatic annotation")
@@ -51,7 +51,7 @@ public class EnzymesAutomaticAnnotation {
 	private List<Boolean> inputColumn4 = new ArrayList<>(); //CheckBox reviewed
 	private Boolean inputAcceptDefault;
 	private String blastDatabase;
-	private EnzymesAnnotationDataInterface homologyDataContainer;
+	private AnnotationEnzymesAIB homologyDataContainer;
 	private Map<Integer, String> locusTag;
 	private Map<Integer, String> geneName;
 	private Map<Integer, String> ecMap;
@@ -101,7 +101,7 @@ public class EnzymesAutomaticAnnotation {
 
 
 	@Port(direction=Direction.INPUT, name="homologyDataContainer", order=7)
-	public void setEnzymesAnnotationDataInterface(EnzymesAnnotationDataInterface homologyDataContainer){
+	public void setEnzymesAnnotationDataInterface(AnnotationEnzymesAIB homologyDataContainer){
 
 		try {
 
@@ -146,7 +146,7 @@ public class EnzymesAutomaticAnnotation {
 
 	public void applyPipelineOptions(Set<Integer> hits) {
 
-		Map<Integer, Integer> sKeyToRow = homologyDataContainer.getReverseKeys();
+		Map<Integer, Integer> sKeyToRow = homologyDataContainer.getTableRowIndex();
 
 		long startTime = GregorianCalendar.getInstance().getTimeInMillis();
 
@@ -157,7 +157,7 @@ public class EnzymesAutomaticAnnotation {
 
 		int p = 0;
 
-		GenericDataTable mainTableData = homologyDataContainer.getAllGenes(blastDatabase, true);
+		WorkspaceGenericDataTable mainTableData = homologyDataContainer.getAllGenes(blastDatabase, true);
 
 		for(Integer sKey : hits) {
 
@@ -171,7 +171,7 @@ public class EnzymesAutomaticAnnotation {
 
 					boolean resultNotFound = true;
 
-					DataTable dataTable = homologyDataContainer.getDataTable(row);
+					WorkspaceDataTable dataTable = getHomologyResults(homologyDataContainer.getKeys().get(row));
 
 					int dataSize = dataTable.getRowCount();
 					
@@ -314,7 +314,7 @@ public class EnzymesAutomaticAnnotation {
 			////////////
 			progress.setTime(0, 0, 0, "saving report");
 			
-			String path = FileUtils.getWorkspaceTaxonomyFolderPath(this.homologyDataContainer.getProject().getDatabase().getDatabaseName(), this.homologyDataContainer.getProject().getTaxonomyID());
+			String path = FileUtils.getWorkspaceTaxonomyFolderPath(this.homologyDataContainer.getName(), this.homologyDataContainer.getWorkspace().getTaxonomyID());
 
 			Calendar cal = new GregorianCalendar();
 
@@ -342,7 +342,7 @@ public class EnzymesAutomaticAnnotation {
 
 				columnCounter=0;
 
-				Integer row = homologyDataContainer.getReverseKeys().get(key);
+				Integer row = homologyDataContainer.getTableRowIndex().get(key);
 				String currentAnnotation = this.homologyDataContainer.getItemsList().get(1).get(row),
 						newAnnotation = this.ecMap.get(key);
 				
@@ -411,9 +411,48 @@ public class EnzymesAutomaticAnnotation {
 			e.printStackTrace();
 		}
 
-		MerlinUtils.updateEnzymesAnnotationView(homologyDataContainer.getProject().getName());
+		MerlinUtils.updateEnzymesAnnotationView(homologyDataContainer.getWorkspace().getName());
 
 		Workbench.getInstance().info("The automatic enzyme annotation process has finished!");
+	}
+	
+	/**
+	 * @param row
+	 * @return
+	 */
+	public WorkspaceDataTable getHomologyResults(int row) {
+
+		Statement statement;
+
+		try {
+
+			statement = this.connection.createStatement();		//create hibernate connection here...
+
+			String program = HomologyAPI.getSetupProgram(statement);
+
+			List<String> columnsNames = new ArrayList<String>();
+
+			columnsNames.add("reference ID");
+			columnsNames.add("locus ID");
+			columnsNames.add("status");
+			columnsNames.add("organism");
+			columnsNames.add("e Value");
+			columnsNames.add("score (bits)");
+			columnsNames.add("product");
+			columnsNames.add("EC number");
+
+			WorkspaceDataTable res = new WorkspaceDataTable(columnsNames, "");
+
+			for(ArrayList<String> lists : HomologyAPI.getHomologyResults(row, statement))
+				res.addLine(lists);
+
+			return res;
+
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 
@@ -423,7 +462,7 @@ public class EnzymesAutomaticAnnotation {
 	 * @param row
 	 * @return
 	 */
-	public static String getEcNumber(String query, GenericDataTable mainTableData, Integer row){
+	public static String getEcNumber(String query, WorkspaceGenericDataTable mainTableData, Integer row){
 
 		if(query.contains(", ")){
 
@@ -453,7 +492,7 @@ public class EnzymesAutomaticAnnotation {
 	 * @param mainTableData
 	 * @return
 	 */
-	public Integer getEcNumberColumnIndex(GenericDataTable mainTableData){
+	public Integer getEcNumberColumnIndex(WorkspaceGenericDataTable mainTableData){
 
 		String[] columnNames = mainTableData.getColumnsNames();
 

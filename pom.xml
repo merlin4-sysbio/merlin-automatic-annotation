@@ -5,7 +5,7 @@
 
 	<groupId>pt.uminho.ceb.biosystems.merlin</groupId>
 	<artifactId>merlin-automatic-annotation</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>merlin-automatic-annotation</name>
@@ -17,6 +17,14 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
 	</properties>
+	
+	<repositories>
+		<repository>
+			<id>nexus</id>
+			<name>Nexus BioSystems Server</name>
+			<url>https://nexus.bio.di.uminho.pt/content/repositories/biosystems-snapshots/</url>
+		</repository>
+	</repositories>
 	
 	<build>
 		<plugins>
@@ -33,7 +41,7 @@
 						</goals>
 						<configuration>
 							<!-- <outputDirectory>../merlin-core/plugins_bin/merlin-draft-reconstruction</outputDirectory> -->
-							<outputDirectory>../merlin-core/resources/merlin-automatic-annotation</outputDirectory>
+							<outputDirectory>../merlin-aibench/resources/merlin-automatic-annotation</outputDirectory>
 							<resources>
 								<resource>
 									<directory>target/classes</directory>
@@ -78,8 +86,8 @@
 		</dependency>
 		<dependency>
 			<groupId>pt.uminho.ceb.biosystems.merlin</groupId>
-			<artifactId>merlin</artifactId>
-			<version>3.9.3</version>
+			<artifactId>merlin-aibench</artifactId>
+			<version>4.0.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
