@@ -11,7 +11,7 @@
 		<extension uid="aibench.core" name="aibench.core.operation-definition"
 			class="pt.uminho.ceb.biosystems.merlin.merlin_automatic_annotation.EnzymesAutomaticAnnotation">
 			<operation-description name="automatic workflow"
-				path="10@annotation/10@enzymes/" uid="operations.EnzymesAutomaticAnnotation.ID" />
+				path="10@annotation/100@enzymes/" uid="operations.EnzymesAutomaticAnnotation.ID" />
 		</extension>
 
 		<extension uid="aibench.workbench" name="aibench.workbench.view">

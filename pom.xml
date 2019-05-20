@@ -41,7 +41,7 @@
 						</goals>
 						<configuration>
 							<!-- <outputDirectory>../merlin-core/plugins_bin/merlin-draft-reconstruction</outputDirectory> -->
-							<outputDirectory>../merlin-aibench/resources/merlin-automatic-annotation</outputDirectory>
+							<outputDirectory>../merlin-aibench/merlin/plugins_bin/merlin-automatic-annotation</outputDirectory>
 							<resources>
 								<resource>
 									<directory>target/classes</directory>

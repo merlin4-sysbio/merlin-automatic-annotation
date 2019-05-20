@@ -424,11 +424,11 @@ public class EnzymesAutomaticAnnotation {
 
 		Statement statement;
 
-		try {
+//		try {
+//
+//			statement = this.connection.createStatement();		//create hibernate connection here...
 
-			statement = this.connection.createStatement();		//create hibernate connection here...
-
-			String program = HomologyAPI.getSetupProgram(statement);
+//			String program = HomologyAPI.getSetupProgram(statement);
 
 			List<String> columnsNames = new ArrayList<String>();
 
@@ -443,16 +443,16 @@ public class EnzymesAutomaticAnnotation {
 
 			WorkspaceDataTable res = new WorkspaceDataTable(columnsNames, "");
 
-			for(ArrayList<String> lists : HomologyAPI.getHomologyResults(row, statement))
-				res.addLine(lists);
+//			for(ArrayList<String> lists : HomologyAPI.getHomologyResults(row, statement))
+//				res.addLine(lists);
 
 			return res;
 
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
+//		}
+//		catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		return null;
 	}
 
 
