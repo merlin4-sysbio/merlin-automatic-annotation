@@ -144,7 +144,7 @@ public class EnzymesAutomaticAnnotation {
 		return result;
 	}
 
-	public void applyPipelineOptions(Set<Integer> hits) {
+	public void applyPipelineOptions(Set<Integer> hits) throws Exception {
 
 		Map<Integer, Integer> sKeyToRow = homologyDataContainer.getTableRowIndex();
 
@@ -422,14 +422,6 @@ public class EnzymesAutomaticAnnotation {
 	 */
 	public WorkspaceDataTable getHomologyResults(int row) {
 
-		Statement statement;
-
-//		try {
-//
-//			statement = this.connection.createStatement();		//create hibernate connection here...
-
-//			String program = HomologyAPI.getSetupProgram(statement);
-
 			List<String> columnsNames = new ArrayList<String>();
 
 			columnsNames.add("reference ID");
@@ -443,16 +435,8 @@ public class EnzymesAutomaticAnnotation {
 
 			WorkspaceDataTable res = new WorkspaceDataTable(columnsNames, "");
 
-//			for(ArrayList<String> lists : HomologyAPI.getHomologyResults(row, statement))
-//				res.addLine(lists);
-
 			return res;
 
-//		}
-//		catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//		return null;
 	}
 
 
