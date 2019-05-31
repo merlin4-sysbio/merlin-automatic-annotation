@@ -314,7 +314,7 @@ public class EnzymesAutomaticAnnotation {
 			////////////
 			progress.setTime(0, 0, 0, "saving report");
 			
-			String path = FileUtils.getWorkspaceTaxonomyFolderPath(this.homologyDataContainer.getName(), this.homologyDataContainer.getWorkspace().getTaxonomyID());
+			String path = FileUtils.getWorkspaceTaxonomyFolderPath(this.homologyDataContainer.getWorkspace().getName(), this.homologyDataContainer.getWorkspace().getTaxonomyID());
 
 			Calendar cal = new GregorianCalendar();
 
@@ -395,7 +395,7 @@ public class EnzymesAutomaticAnnotation {
 			excelRow = sheet.createRow(rowCounter++);
 			excelRow = sheet.createRow(rowCounter++);
 			columnCounter=0;
-			excelRow.createCell(columnCounter++).setCellValue("Accept default annotation if no match is found");
+			excelRow.createCell(columnCounter++).setCellValue("accept default annotation if no match is found");
 			excelRow.createCell(columnCounter++).setCellValue(Boolean.valueOf(this.inputAcceptDefault));
 
 			String excelFileName = path.concat(EnzymesAutomaticAnnotation.class.getSimpleName().concat("_").concat(blastDatabase).concat(hour24).concat("_").concat(min).concat("_").concat(day).concat(".xlsx"));
