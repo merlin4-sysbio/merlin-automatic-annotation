@@ -33,6 +33,8 @@ import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceDataTable;
 import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceGenericDataTable;
 import pt.uminho.ceb.biosystems.merlin.database.connector.databaseAPI.HomologyAPI;
 import pt.uminho.ceb.biosystems.merlin.database.connector.datatypes.Connection;
+import pt.uminho.ceb.biosystems.merlin.services.annotation.AnnotationEnzymesServices;
+import pt.uminho.ceb.biosystems.merlin.services.model.ModelGenesServices;
 import pt.uminho.ceb.biosystems.merlin.utilities.io.FileUtils;
 
 @Operation(name="enzymes automatic annotation", description="enzymes automatic annotation")
@@ -109,6 +111,12 @@ public class EnzymesAutomaticAnnotation {
 
 			Connection connection = homologyDataContainer.getConnection();
 			Statement statement = connection.createStatement();
+			
+//			AnnotationEnzymesServices.checkifHomologyDataContainsInformation  Implement this!!!!! if true -> display the message; else continue to applyPipelineOptions(hits);
+			
+//			ModelGenesServices.countNumberOfGeneIDs();
+//			AnnotationEnzymesServices.countNumberOfGeneHomologyEntries(); If same -> continue; else throw("the number of enzymes processed during the enzymes homology search is different from the total entries of the genome, please finish the BLAST process before performing annotation")
+			
 			int continueQuestion = CustomGUI.stopQuestion("continue?", "all annotations previously saved in the database will be lost, do you wish to continue?", new String[]{"yes", "no"});
 
 			if(continueQuestion==0) {
@@ -157,8 +165,8 @@ public class EnzymesAutomaticAnnotation {
 
 		int p = 0;
 
-		WorkspaceGenericDataTable mainTableData = homologyDataContainer.getAllGenes(blastDatabase, true);
-
+		WorkspaceGenericDataTable mainTableData = homologyDataContainer.getAllGenes(blastDatabase, false);	// to avoid using a table without all entries!
+		
 		for(Integer sKey : hits) {
 
 			if(!this.cancel.get()) {
@@ -208,7 +216,7 @@ public class EnzymesAutomaticAnnotation {
 									}
 								}
 								else {
-
+									
 									if(secondInput.equalsIgnoreCase(organism) && goEvalue && goReviewed) {
 
 										ecMap.put(sKey, getEcNumber(ecNumbers, mainTableData, row));
@@ -220,7 +228,7 @@ public class EnzymesAutomaticAnnotation {
 								}	
 							}
 
-							if(firstInput.equalsIgnoreCase(GENUS)) {
+							else if(firstInput.equalsIgnoreCase(GENUS)) {
 
 								String[] organismSplit = (organism).split(" ");
 								String getGenus = organismSplit[0].trim();
@@ -314,7 +322,7 @@ public class EnzymesAutomaticAnnotation {
 			////////////
 			progress.setTime(0, 0, 0, "saving report");
 			
-			String path = FileUtils.getWorkspaceTaxonomyFolderPath(this.homologyDataContainer.getName(), this.homologyDataContainer.getWorkspace().getTaxonomyID());
+			String path = FileUtils.getWorkspaceTaxonomyFolderPath(this.homologyDataContainer.getWorkspace().getName(), this.homologyDataContainer.getWorkspace().getTaxonomyID());
 
 			Calendar cal = new GregorianCalendar();
 
