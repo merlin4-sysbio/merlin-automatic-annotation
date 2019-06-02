@@ -122,7 +122,7 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 		this.homologyDataContainer = (AnnotationEnzymesAIB) AIBenchUtils.getEntity(workspace.getSelectedItem().toString(), AnnotationEnzymesAIB.class);
 		homologyDataContainer.getWorkspace().getTaxonomyID();
 		this.organism = homologyDataContainer.getWorkspace().getOrganismName();
-
+		
 		getAllOrganisms();
 
 		initGUI();
@@ -1438,14 +1438,29 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 			String[] result = ProjectAPI.getAllOrganisms(statement);
 			String[] result2 = ProjectAPI.getAllGenus(statement);
 
-			String organism = result[0];
-
 			Arrays.sort(result);
 			Arrays.sort(result2);
 
 			for(int i = 0; i < result.length; i++) {
-				if(result[i].equalsIgnoreCase(organism)) {
+
+				String auxName = result[i];
+				
+				if(auxName.equalsIgnoreCase(this.organism)) {
 					this.indexOrganism = i+1;
+				}
+				else if(auxName.replace("strain", "").replaceAll("[^A-Za-z0-9]", "").equalsIgnoreCase(this.organism.replaceAll("[^A-Za-z0-9]", ""))) {
+					this.indexOrganism = i+1;
+				}
+				
+			}
+			
+			//select the index of the organism genus in the genus list
+			String[] organismsplit= organism.split(" ");
+			this.organismGenus = organismsplit[0];
+			
+			for(int i = 0; i < result2.length; i++) {
+				if(result2[i].equals(this.organismGenus)) {
+					this.indexGenus = i + 1;
 				}
 			}
 
@@ -1472,15 +1487,6 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 		jComboBox3.setSelectedIndex(2);
 		jComboBox5.setSelectedIndex(1);
 
-		//select the index of the organism genus in the genus list
-		String[] organismsplit= organism.split(" ");
-		this.organismGenus = " " + organismsplit[0];
-
-		for(int i = 0; i < this.genus.length; i++) {
-			if(this.genus[i].equals(this.organismGenus)) {
-				this.indexGenus = i;
-			}
-		}
 		//set default of the second combo box of pipeline options 1 and 2
 
 		jComboBox2.setSelectedIndex(this.indexOrganism);

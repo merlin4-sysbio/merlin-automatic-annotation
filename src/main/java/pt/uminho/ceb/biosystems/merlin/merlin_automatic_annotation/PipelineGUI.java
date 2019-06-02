@@ -117,8 +117,6 @@ public class PipelineGUI extends javax.swing.JDialog implements InputGUI{
 		
 		List<String> projects = AIBenchUtils.getProjectNames();
 		
-		
-		
 		workspaces = new String[projects.size()];
 		workspace = new JComboBox<>(projects.toArray(workspaces));
 		

@@ -59,7 +59,7 @@ public class EnzymesAutomaticAnnotation {
 	private Map<Integer, String> ecMap;
 	private Map<Integer, String> confLevelMap;
 
-	private AtomicBoolean cancel = new AtomicBoolean();
+	private AtomicBoolean cancel = new AtomicBoolean(false);
 	private TimeLeftProgress progress = new TimeLeftProgress();
 
 	private int locusTagColumn = 1;
@@ -153,7 +153,7 @@ public class EnzymesAutomaticAnnotation {
 	}
 
 	public void applyPipelineOptions(Set<Integer> hits) throws Exception {
-
+		
 		Map<Integer, Integer> sKeyToRow = homologyDataContainer.getTableRowIndex();
 
 		long startTime = GregorianCalendar.getInstance().getTimeInMillis();
@@ -168,18 +168,20 @@ public class EnzymesAutomaticAnnotation {
 		WorkspaceGenericDataTable mainTableData = homologyDataContainer.getAllGenes(blastDatabase, false);	// to avoid using a table without all entries!
 		
 		for(Integer sKey : hits) {
-
+			
+			System.out.println(sKey);
+			
 			if(!this.cancel.get()) {
 
 				p++;
-
+				
 				if(sKeyToRow.containsKey(sKey)) {
 
 					int row = sKeyToRow.get(sKey);
 
 					boolean resultNotFound = true;
 
-					WorkspaceDataTable dataTable = getHomologyResults(homologyDataContainer.getKeys().get(row));
+					WorkspaceDataTable dataTable = homologyDataContainer.getRowInfo(sKey, true)[0];
 
 					int dataSize = dataTable.getRowCount();
 					
@@ -189,7 +191,7 @@ public class EnzymesAutomaticAnnotation {
 
 							String confidenceLevel = listConfidenceLevel[k];
 							
-							boolean reviewed = Integer.valueOf((String) dataTable.getValueAt(i, 2)) != 0;
+							boolean reviewed = Boolean.valueOf((String) dataTable.getValueAt(i, 2));
 							String organism = (String) dataTable.getValueAt(i, 3);
 							double eValue = Double.valueOf((String) dataTable.getValueAt(i, 4));
 							String ecNumbers = (String)dataTable.getValueAt(i, 7);
@@ -201,7 +203,7 @@ public class EnzymesAutomaticAnnotation {
 							
 							boolean goEvalue = thirdEvalue >= eValue ;
 							boolean goReviewed = forthReviewed == reviewed; 
-
+							
 							if(firstInput.equalsIgnoreCase(SPECIES)) {  
 
 								if(secondInput.equals("any")) { //we only have to check the e-value and if the entry is reviewed; accept the first one that meets the requirements 
@@ -349,8 +351,14 @@ public class EnzymesAutomaticAnnotation {
 			for(int key : ecMap.keySet()) {
 
 				columnCounter=0;
+			
 
 				Integer row = homologyDataContainer.getTableRowIndex().get(key);
+				
+				
+				System.out.println(row);
+				System.out.println(this.locusTag.get(key));
+				
 				String currentAnnotation = this.homologyDataContainer.getItemsList().get(1).get(row),
 						newAnnotation = this.ecMap.get(key);
 				
@@ -383,7 +391,7 @@ public class EnzymesAutomaticAnnotation {
 			rowCounter = 0;
 			columnCounter = 0;
 
-			sheet = wb.createSheet("Worflow configuration");
+			sheet = wb.createSheet("Workflow configuration");
 			excelRow = sheet.createRow(rowCounter++);
 			excelRow.createCell(columnCounter++).setCellValue("taxa type");
 			excelRow.createCell(columnCounter++).setCellValue("taxon");
@@ -424,30 +432,6 @@ public class EnzymesAutomaticAnnotation {
 		Workbench.getInstance().info("The automatic enzyme annotation process has finished!");
 	}
 	
-	/**
-	 * @param row
-	 * @return
-	 */
-	public WorkspaceDataTable getHomologyResults(int row) {
-
-			List<String> columnsNames = new ArrayList<String>();
-
-			columnsNames.add("reference ID");
-			columnsNames.add("locus ID");
-			columnsNames.add("status");
-			columnsNames.add("organism");
-			columnsNames.add("e Value");
-			columnsNames.add("score (bits)");
-			columnsNames.add("product");
-			columnsNames.add("EC number");
-
-			WorkspaceDataTable res = new WorkspaceDataTable(columnsNames, "");
-
-			return res;
-
-	}
-
-
 	/**
 	 * @param ecNumber
 	 * @param mainTableData
