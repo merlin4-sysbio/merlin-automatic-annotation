@@ -165,11 +165,9 @@ public class EnzymesAutomaticAnnotation {
 
 		int p = 0;
 
-		WorkspaceGenericDataTable mainTableData = homologyDataContainer.getAllGenes(blastDatabase, false);	// to avoid using a table without all entries!
+		WorkspaceGenericDataTable mainTableData = homologyDataContainer.getAllGenes(blastDatabase, true);	// to avoid using a table without all entries!
 		
 		for(Integer sKey : hits) {
-			
-			System.out.println(sKey);
 			
 			if(!this.cancel.get()) {
 
