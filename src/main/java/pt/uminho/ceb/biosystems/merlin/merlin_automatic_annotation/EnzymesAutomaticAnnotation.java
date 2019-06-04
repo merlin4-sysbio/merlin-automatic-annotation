@@ -33,8 +33,6 @@ import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceDataTable;
 import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceGenericDataTable;
 import pt.uminho.ceb.biosystems.merlin.database.connector.databaseAPI.HomologyAPI;
 import pt.uminho.ceb.biosystems.merlin.database.connector.datatypes.Connection;
-import pt.uminho.ceb.biosystems.merlin.services.annotation.AnnotationEnzymesServices;
-import pt.uminho.ceb.biosystems.merlin.services.model.ModelGenesServices;
 import pt.uminho.ceb.biosystems.merlin.utilities.io.FileUtils;
 
 @Operation(name="enzymes automatic annotation", description="enzymes automatic annotation")
