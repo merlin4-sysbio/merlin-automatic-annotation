@@ -1432,6 +1432,7 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 			Statement statement = connection.createStatement();
 
 			this.blastDatabase = HomologyAPI.getLastestUsedBlastDatabase(statement);
+			
 			this.eValueBlast = ProjectAPI.getBlastEValue(blastDatabase, statement).toString();
 
 

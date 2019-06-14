@@ -33,6 +33,8 @@ import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceDataTable;
 import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceGenericDataTable;
 import pt.uminho.ceb.biosystems.merlin.database.connector.databaseAPI.HomologyAPI;
 import pt.uminho.ceb.biosystems.merlin.database.connector.datatypes.Connection;
+import pt.uminho.ceb.biosystems.merlin.services.annotation.AnnotationEnzymesServices;
+import pt.uminho.ceb.biosystems.merlin.services.model.ModelGenesServices;
 import pt.uminho.ceb.biosystems.merlin.utilities.io.FileUtils;
 
 @Operation(name="enzymes automatic annotation", description="enzymes automatic annotation")
@@ -109,22 +111,32 @@ public class EnzymesAutomaticAnnotation {
 
 			Connection connection = homologyDataContainer.getConnection();
 			Statement statement = connection.createStatement();
-			
-//			AnnotationEnzymesServices.checkifHomologyDataContainsInformation  Implement this!!!!! if true -> display the message; else continue to applyPipelineOptions(hits);
-			
-//			ModelGenesServices.countNumberOfGeneIDs();
-//			AnnotationEnzymesServices.countNumberOfGeneHomologyEntries(); If same -> continue; else throw("the number of enzymes processed during the enzymes homology search is different from the total entries of the genome, please finish the BLAST process before performing annotation")
-			
-			int continueQuestion = CustomGUI.stopQuestion("continue?", "all annotations previously saved in the database will be lost, do you wish to continue?", new String[]{"yes", "no"});
 
-			if(continueQuestion==0) {
+			//			AnnotationEnzymesServices.checkifHomologyDataContainsInformation  Implement this!!!!! if true -> display the message; else continue to applyPipelineOptions(hits);
 
-				HomologyAPI.deleteHomologyData(blastDatabase, statement);
+			//			ModelGenesServices.countNumberOfGeneIDs();
+			//			AnnotationEnzymesServices.countNumberOfGeneHomologyEntries(); If same -> continue; else throw("the number of enzymes processed during the enzymes homology search is different from the total entries of the genome, please finish the BLAST process before performing annotation")
 
-				Set<Integer> hits = getAllHits(statement);
+			Long genesEntries = ModelGenesServices.countEntriesInGene(homologyDataContainer.getWorkspace().getName());
+			Long homologyEntries = AnnotationEnzymesServices.countEntriesInGeneHomology(homologyDataContainer.getWorkspace().getName());
 
-				applyPipelineOptions(hits);
+			if(genesEntries != homologyEntries) {
+
+				int continueQuestion = CustomGUI.stopQuestion("continue?", "all annotations previously saved in the database will be lost, do you wish to continue?", new String[]{"yes", "no"});
+
+				if(continueQuestion==0) {
+
+					HomologyAPI.deleteHomologyData(blastDatabase, statement);
+
+					Set<Integer> hits = getAllHits(statement);
+
+					applyPipelineOptions(hits);
+				}
 			}
+			else {
+				throw new Exception("the BLAST process was not complete, please perform BLAST until all sequences are processed");			
+			}
+				
 
 		}
 		catch (Exception e) {
@@ -151,7 +163,7 @@ public class EnzymesAutomaticAnnotation {
 	}
 
 	public void applyPipelineOptions(Set<Integer> hits) throws Exception {
-		
+
 		Map<Integer, Integer> sKeyToRow = homologyDataContainer.getTableRowIndex();
 
 		long startTime = GregorianCalendar.getInstance().getTimeInMillis();
@@ -164,13 +176,13 @@ public class EnzymesAutomaticAnnotation {
 		int p = 0;
 
 		WorkspaceGenericDataTable mainTableData = homologyDataContainer.getAllGenes(blastDatabase, true);	// to avoid using a table without all entries!
-		
+
 		for(Integer sKey : hits) {
-			
+
 			if(!this.cancel.get()) {
 
 				p++;
-				
+
 				if(sKeyToRow.containsKey(sKey)) {
 
 					int row = sKeyToRow.get(sKey);
@@ -180,26 +192,26 @@ public class EnzymesAutomaticAnnotation {
 					WorkspaceDataTable dataTable = homologyDataContainer.getRowInfo(sKey, true)[0];
 
 					int dataSize = dataTable.getRowCount();
-					
+
 					for(int k=0; k < inputColumn1.size() && resultNotFound; k++) { //indice a ir buscar nas listas do pipeline
-					
+
 						for(int i = 0; i < dataSize && resultNotFound; i++) { //cada linha das annotations
 
 							String confidenceLevel = listConfidenceLevel[k];
-							
+
 							boolean reviewed = Boolean.valueOf((String) dataTable.getValueAt(i, 2));
 							String organism = (String) dataTable.getValueAt(i, 3);
 							double eValue = Double.valueOf((String) dataTable.getValueAt(i, 4));
 							String ecNumbers = (String)dataTable.getValueAt(i, 7);
-							
+
 							String firstInput = inputColumn1.get(k);
 							String secondInput = inputColumn2.get(k).trim();
 							double thirdEvalue = inputColumn3.get(k);
 							boolean forthReviewed = inputColumn4.get(k);
-							
+
 							boolean goEvalue = thirdEvalue >= eValue ;
 							boolean goReviewed = forthReviewed == reviewed; 
-							
+
 							if(firstInput.equalsIgnoreCase(SPECIES)) {  
 
 								if(secondInput.equals("any")) { //we only have to check the e-value and if the entry is reviewed; accept the first one that meets the requirements 
@@ -214,7 +226,7 @@ public class EnzymesAutomaticAnnotation {
 									}
 								}
 								else {
-									
+
 									if(secondInput.equalsIgnoreCase(organism) && goEvalue && goReviewed) {
 
 										ecMap.put(sKey, getEcNumber(ecNumbers, mainTableData, row));
@@ -259,14 +271,14 @@ public class EnzymesAutomaticAnnotation {
 					}
 
 					if(resultNotFound == true) {
-						
+
 						if(inputAcceptDefault) {
-							
+
 							this.ecMap.put(sKey, null);
 							this.confLevelMap.put(sKey, ACCEPT_DEFAULT_NOTE);
 						}
 						else {
-							
+
 							ecMap.put(sKey, "");
 							confLevelMap.put(sKey, REJECT_MESSAGE);
 						}
@@ -309,9 +321,9 @@ public class EnzymesAutomaticAnnotation {
 	public void saveResult() {
 
 		try {
-			
+
 			long startTime = GregorianCalendar.getInstance().getTimeInMillis();
-			
+
 			progress.setTime(0, 0, 0, "saving results");
 
 			Connection connection = homologyDataContainer.getConnection();
@@ -319,7 +331,7 @@ public class EnzymesAutomaticAnnotation {
 
 			////////////
 			progress.setTime(0, 0, 0, "saving report");
-			
+
 			String path = FileUtils.getWorkspaceTaxonomyFolderPath(this.homologyDataContainer.getWorkspace().getName(), this.homologyDataContainer.getWorkspace().getTaxonomyID());
 
 			Calendar cal = new GregorianCalendar();
@@ -347,17 +359,17 @@ public class EnzymesAutomaticAnnotation {
 			for(int key : ecMap.keySet()) {
 
 				columnCounter=0;
-			
+
 
 				Integer row = homologyDataContainer.getTableRowIndex().get(key);
-				
-				
+
+
 				System.out.println(row);
 				System.out.println(this.locusTag.get(key));
-				
+
 				String currentAnnotation = this.homologyDataContainer.getItemsList().get(1).get(row),
 						newAnnotation = this.ecMap.get(key);
-				
+
 				if(newAnnotation == null && this.confLevelMap.get(key).equals(ACCEPT_DEFAULT_NOTE))
 					newAnnotation = currentAnnotation;
 
@@ -379,7 +391,7 @@ public class EnzymesAutomaticAnnotation {
 					excelRow.createCell(columnCounter++).setCellValue(homologyDataContainer.getECPercentage(currentAnnotation,row));
 				else
 					excelRow.createCell(columnCounter++).setCellValue("");
-				
+
 				progress.setTime(GregorianCalendar.getInstance().getTimeInMillis() - startTime, rowCounter,  ecMap.keySet().size(), "saving report");
 			}
 
@@ -427,7 +439,7 @@ public class EnzymesAutomaticAnnotation {
 
 		Workbench.getInstance().info("The automatic enzyme annotation process has finished!");
 	}
-	
+
 	/**
 	 * @param ecNumber
 	 * @param mainTableData
