@@ -21,6 +21,7 @@ import pt.uminho.ceb.biosystems.merlin.aibench.utilities.AIBenchUtils;
 import pt.uminho.ceb.biosystems.merlin.database.connector.databaseAPI.HomologyAPI;
 import pt.uminho.ceb.biosystems.merlin.database.connector.databaseAPI.ProjectAPI;
 import pt.uminho.ceb.biosystems.merlin.database.connector.datatypes.Connection;
+import pt.uminho.ceb.biosystems.merlin.services.annotation.AnnotationEnzymesServices;
 
 public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implements InputGUI{
 
@@ -109,6 +110,7 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 	private List<Boolean> listInputColumn4 = new ArrayList<>(); //CheckBox reviewed
 
 	private String[] workspaces;
+	private String workspaceName;
 
 	public EnzymesAutomaticAnnotationGUI() {
 
@@ -122,6 +124,7 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 		this.homologyDataContainer = (AnnotationEnzymesAIB) AIBenchUtils.getEntity(workspace.getSelectedItem().toString(), AnnotationEnzymesAIB.class);
 		homologyDataContainer.getWorkspace().getTaxonomyID();
 		this.organism = homologyDataContainer.getWorkspace().getOrganismName();
+		this.workspaceName = homologyDataContainer.getWorkspace().getName();
 		
 		getAllOrganisms();
 
@@ -1431,7 +1434,7 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 			Connection connection = homologyDataContainer.getConnection();
 			Statement statement = connection.createStatement();
 
-			this.blastDatabase = HomologyAPI.getLastestUsedBlastDatabase(statement);
+			this.blastDatabase = AnnotationEnzymesServices.getLastestUsedBlastDatabase(this.workspaceName);
 			
 			this.eValueBlast = ProjectAPI.getBlastEValue(blastDatabase, statement).toString();
 
