@@ -117,8 +117,8 @@ public class EnzymesAutomaticAnnotation {
 			//			ModelGenesServices.countNumberOfGeneIDs();
 			//			AnnotationEnzymesServices.countNumberOfGeneHomologyEntries(); If same -> continue; else throw("the number of enzymes processed during the enzymes homology search is different from the total entries of the genome, please finish the BLAST process before performing annotation")
 
-			Long genesEntries = ModelGenesServices.countEntriesInGene(homologyDataContainer.getWorkspace().getName());
-			Long homologyEntries = AnnotationEnzymesServices.countEntriesInGeneHomology(homologyDataContainer.getWorkspace().getName());
+			int genesEntries = ModelGenesServices.countEntriesInGene(homologyDataContainer.getWorkspace().getName());
+			int homologyEntries = AnnotationEnzymesServices.countEntriesInGeneHomology(homologyDataContainer.getWorkspace().getName());
 
 			if(genesEntries != homologyEntries) {
 
