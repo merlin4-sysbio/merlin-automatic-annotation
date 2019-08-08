@@ -120,7 +120,7 @@ public class EnzymesAutomaticAnnotation {
 			int genesEntries = ModelGenesServices.countEntriesInGene(homologyDataContainer.getWorkspace().getName());
 			int homologyEntries = AnnotationEnzymesServices.countEntriesInGeneHomology(homologyDataContainer.getWorkspace().getName());
 
-			if(genesEntries != homologyEntries) {
+			if(genesEntries == homologyEntries) {
 
 				int continueQuestion = CustomGUI.stopQuestion("continue?", "all annotations previously saved in the database will be lost, do you wish to continue?", new String[]{"yes", "no"});
 
