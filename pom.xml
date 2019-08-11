@@ -50,6 +50,7 @@
 								<resource>
 									<directory>src/main/resources</directory>
 									<filtering>false</filtering>
+									<include>plugins.xml</include>
 								</resource>
 							</resources>
 						</configuration>
@@ -90,4 +91,15 @@
 			<version>4.0.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
+	
+		<distributionManagement>
+		<snapshotRepository>
+			<id>biosystems-snapshots</id>
+			<url>https://nexus.bio.di.uminho.pt/content/repositories/biosystems-snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>biosystems-releases</id>
+			<url>https://nexus.bio.di.uminho.pt/content/repositories/biosystems-releases</url>
+		</repository>
+	</distributionManagement>
 </project>
