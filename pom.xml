@@ -5,7 +5,7 @@
 
 	<groupId>pt.uminho.ceb.biosystems.merlin</groupId>
 	<artifactId>merlin-automatic-annotation</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>4.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>merlin-automatic-annotation</name>
@@ -88,7 +88,7 @@
 		<dependency>
 			<groupId>pt.uminho.ceb.biosystems.merlin</groupId>
 			<artifactId>merlin-aibench</artifactId>
-			<version>4.0.0-SNAPSHOT</version>
+			<version>4.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	
