@@ -18,7 +18,6 @@ import es.uvigo.ei.aibench.workbench.Workbench;
 import es.uvigo.ei.aibench.workbench.utilities.Utilities;
 import pt.uminho.ceb.biosystems.merlin.aibench.datatypes.annotation.AnnotationEnzymesAIB;
 import pt.uminho.ceb.biosystems.merlin.aibench.utilities.AIBenchUtils;
-import pt.uminho.ceb.biosystems.merlin.database.connector.databaseAPI.HomologyAPI;
 import pt.uminho.ceb.biosystems.merlin.database.connector.databaseAPI.ProjectAPI;
 import pt.uminho.ceb.biosystems.merlin.database.connector.datatypes.Connection;
 import pt.uminho.ceb.biosystems.merlin.services.annotation.AnnotationEnzymesServices;
