@@ -1,6 +1,5 @@
 package pt.uminho.ceb.biosystems.merlin.merlin_automatic_annotation;
 
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,8 +17,6 @@ import es.uvigo.ei.aibench.workbench.Workbench;
 import es.uvigo.ei.aibench.workbench.utilities.Utilities;
 import pt.uminho.ceb.biosystems.merlin.aibench.datatypes.annotation.AnnotationEnzymesAIB;
 import pt.uminho.ceb.biosystems.merlin.aibench.utilities.AIBenchUtils;
-import pt.uminho.ceb.biosystems.merlin.database.connector.databaseAPI.ProjectAPI;
-import pt.uminho.ceb.biosystems.merlin.database.connector.datatypes.Connection;
 import pt.uminho.ceb.biosystems.merlin.services.annotation.AnnotationEnzymesServices;
 
 public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implements InputGUI{
@@ -1430,17 +1427,15 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 	private void getAllOrganisms() {
 
 		try {
-			Connection connection = homologyDataContainer.getConnection();
-			Statement statement = connection.createStatement();
 
 			this.blastDatabase = AnnotationEnzymesServices.getLastestUsedBlastDatabase(this.workspaceName);
 			
-			this.eValueBlast = ProjectAPI.getBlastEValue(blastDatabase, statement).toString();
+			this.eValueBlast = AnnotationEnzymesServices.getBlastEValue(this.workspaceName, blastDatabase).toString();
 
 
-			String[] result = ProjectAPI.getAllOrganisms(statement);
-			String[] result2 = ProjectAPI.getAllGenus(statement);
-
+			String[] result = AnnotationEnzymesServices.getAllOrganisms(this.workspaceName);
+			String[] result2 = AnnotationEnzymesServices.getAllGenus(this.workspaceName);
+			
 			Arrays.sort(result);
 			Arrays.sort(result2);
 
