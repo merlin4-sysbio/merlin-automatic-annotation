@@ -126,7 +126,7 @@ public class EnzymesAutomaticAnnotation {
 
 				if(continueQuestion==0) {
 
-					HomologyAPI.deleteHomologyData(blastDatabase, statement);
+					AnnotationEnzymesServices.deleteFromHomologyDataByDatabaseID(this.homologyDataContainer.getWorkspace().getName(), blastDatabase);
 
 					Set<Integer> hits = getAllHits(statement);
 
