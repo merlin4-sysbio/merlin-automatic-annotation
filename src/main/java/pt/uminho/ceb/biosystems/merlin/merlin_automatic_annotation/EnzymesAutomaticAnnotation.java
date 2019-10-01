@@ -128,7 +128,7 @@ public class EnzymesAutomaticAnnotation {
 
 					HomologyAPI.deleteHomologyData(blastDatabase, statement);
 
-					Set<Integer> hits = getAllHits(statement);
+					Set<Integer> hits = getAllHits();
 
 					applyPipelineOptions(hits);
 				}
@@ -146,18 +146,19 @@ public class EnzymesAutomaticAnnotation {
 		}
 	};
 
-	public Set<Integer> getAllHits(Statement statement){
+	public Set<Integer> getAllHits() throws Exception{
 
 		Set<Integer> result = new HashSet<>();
+		
+		Integer sKey = AnnotationEnzymesServices.getGeneHomologyDatabaseId(this.homologyDataContainer.getWorkspace().getName(),blastDatabase);
+		
+		if(blastDatabase.isEmpty())
+			sKey = AnnotationEnzymesServices.getGeneHomologySKey(this.homologyDataContainer.getWorkspace().getName());
+				
 
-		try {
+		result = AnnotationEnzymesServices.getSKeyForAutomaticAnnotation(this.homologyDataContainer.getWorkspace().getName(), sKey);
 
-			result = HomologyAPI.getSKeyForAutomaticAnnotation(blastDatabase, statement);
-
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-		}
+	
 
 		return result;
 	}
@@ -326,8 +327,12 @@ public class EnzymesAutomaticAnnotation {
 
 			progress.setTime(0, 0, 0, "saving results");
 
-			Connection connection = homologyDataContainer.getConnection();
-			HomologyAPI.insertAutomaticEnzymeAnnotation(connection, locusTag, geneName, ecMap, confLevelMap);
+			for (int sKey : ecMap.keySet()) {
+				
+				AnnotationEnzymesServices.insertHomologyData(homologyDataContainer.getWorkspace().getName(), 
+						sKey, locusTag.get(sKey), geneName.get(sKey), null, ecMap.get(sKey), true, null, confLevelMap.get(sKey));
+				
+			}
 
 			////////////
 			progress.setTime(0, 0, 0, "saving report");
