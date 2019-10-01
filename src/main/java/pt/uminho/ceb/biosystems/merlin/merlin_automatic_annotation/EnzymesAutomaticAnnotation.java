@@ -1,7 +1,6 @@
 package pt.uminho.ceb.biosystems.merlin.merlin_automatic_annotation;
 
 import java.io.FileOutputStream;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +30,6 @@ import pt.uminho.ceb.biosystems.merlin.aibench.utilities.MerlinUtils;
 import pt.uminho.ceb.biosystems.merlin.aibench.utilities.TimeLeftProgress;
 import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceDataTable;
 import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceGenericDataTable;
-import pt.uminho.ceb.biosystems.merlin.database.connector.databaseAPI.HomologyAPI;
 import pt.uminho.ceb.biosystems.merlin.database.connector.datatypes.Connection;
 import pt.uminho.ceb.biosystems.merlin.services.annotation.AnnotationEnzymesServices;
 import pt.uminho.ceb.biosystems.merlin.services.model.ModelGenesServices;
