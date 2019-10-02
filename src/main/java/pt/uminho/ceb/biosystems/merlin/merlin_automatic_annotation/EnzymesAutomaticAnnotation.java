@@ -1,7 +1,6 @@
 package pt.uminho.ceb.biosystems.merlin.merlin_automatic_annotation;
 
 import java.io.FileOutputStream;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -30,7 +29,6 @@ import pt.uminho.ceb.biosystems.merlin.aibench.utilities.MerlinUtils;
 import pt.uminho.ceb.biosystems.merlin.aibench.utilities.TimeLeftProgress;
 import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceDataTable;
 import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceGenericDataTable;
-import pt.uminho.ceb.biosystems.merlin.database.connector.datatypes.Connection;
 import pt.uminho.ceb.biosystems.merlin.services.annotation.AnnotationEnzymesServices;
 import pt.uminho.ceb.biosystems.merlin.services.model.ModelGenesServices;
 import pt.uminho.ceb.biosystems.merlin.utilities.io.FileUtils;
@@ -106,9 +104,6 @@ public class EnzymesAutomaticAnnotation {
 		try {
 
 			this.homologyDataContainer = homologyDataContainer;
-
-			Connection connection = homologyDataContainer.getConnection();
-			Statement statement = connection.createStatement();
 
 			//			AnnotationEnzymesServices.checkifHomologyDataContainsInformation  Implement this!!!!! if true -> display the message; else continue to applyPipelineOptions(hits);
 
