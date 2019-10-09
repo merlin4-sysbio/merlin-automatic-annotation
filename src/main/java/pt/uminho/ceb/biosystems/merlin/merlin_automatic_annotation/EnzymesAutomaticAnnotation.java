@@ -141,19 +141,8 @@ public class EnzymesAutomaticAnnotation {
 
 	public Set<Integer> getAllHits() throws Exception{
 
-		Set<Integer> result = new HashSet<>();
-		
-		Integer sKey = AnnotationEnzymesServices.getGeneHomologyDatabaseId(this.homologyDataContainer.getWorkspace().getName(),blastDatabase);
-		
-		if(blastDatabase.isEmpty())
-			sKey = AnnotationEnzymesServices.getGeneHomologySKey(this.homologyDataContainer.getWorkspace().getName());
-				
+		return  AnnotationEnzymesServices.getSKeyForAutomaticAnnotation(this.homologyDataContainer.getWorkspace().getName(), this.blastDatabase);
 
-		result = AnnotationEnzymesServices.getSKeyForAutomaticAnnotation(this.homologyDataContainer.getWorkspace().getName(), sKey);
-
-	
-
-		return result;
 	}
 
 	public void applyPipelineOptions(Set<Integer> hits) throws Exception {
@@ -361,9 +350,9 @@ public class EnzymesAutomaticAnnotation {
 
 				Integer row = homologyDataContainer.getTableRowIndex().get(key);
 
-
-				System.out.println(row);
-				System.out.println(this.locusTag.get(key));
+//
+//				System.out.println(row);
+//				System.out.println(this.locusTag.get(key));
 
 				String currentAnnotation = this.homologyDataContainer.getItemsList().get(1).get(row),
 						newAnnotation = this.ecMap.get(key);

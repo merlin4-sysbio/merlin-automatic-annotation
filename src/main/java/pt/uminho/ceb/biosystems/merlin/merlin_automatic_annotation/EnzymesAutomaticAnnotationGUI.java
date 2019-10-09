@@ -1430,7 +1430,7 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 
 			this.blastDatabase = AnnotationEnzymesServices.getLastestUsedBlastDatabase(this.workspaceName);
 			
-			this.eValueBlast = AnnotationEnzymesServices.getBlastEValue(this.workspaceName, blastDatabase).toString();
+			this.eValueBlast = AnnotationEnzymesServices.getBlastEValue(this.workspaceName, this.blastDatabase).toString();
 
 
 			String[] result = AnnotationEnzymesServices.getAllOrganisms(this.workspaceName);
@@ -1468,8 +1468,9 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 			this.organisms = (String[]) ArrayUtils.addAll(any, result);
 			this.genus = (String[]) ArrayUtils.addAll(any, result2);
 
-		} catch (Exception e) {
-
+		} 
+		catch (Exception e) {
+			Workbench.getInstance().error(e);
 			e.printStackTrace();
 		}		
 	}
