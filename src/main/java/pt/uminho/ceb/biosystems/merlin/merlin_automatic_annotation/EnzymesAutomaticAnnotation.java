@@ -29,8 +29,12 @@ import pt.uminho.ceb.biosystems.merlin.aibench.utilities.MerlinUtils;
 import pt.uminho.ceb.biosystems.merlin.aibench.utilities.TimeLeftProgress;
 import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceDataTable;
 import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceGenericDataTable;
+import pt.uminho.ceb.biosystems.merlin.core.utilities.Enumerators.SequenceType;
 import pt.uminho.ceb.biosystems.merlin.services.annotation.AnnotationEnzymesServices;
 import pt.uminho.ceb.biosystems.merlin.services.model.ModelGenesServices;
+import pt.uminho.ceb.biosystems.merlin.services.model.ModelSequenceServices;
+import pt.uminho.ceb.biosystems.merlin.services.model.ModelStoichiometryServices;
+import pt.uminho.ceb.biosystems.merlin.utilities.Utilities;
 import pt.uminho.ceb.biosystems.merlin.utilities.io.FileUtils;
 
 @Operation(name="enzymes automatic annotation", description="enzymes automatic annotation")
@@ -110,10 +114,11 @@ public class EnzymesAutomaticAnnotation {
 			//			ModelGenesServices.countNumberOfGeneIDs();
 			//			AnnotationEnzymesServices.countNumberOfGeneHomologyEntries(); If same -> continue; else throw("the number of enzymes processed during the enzymes homology search is different from the total entries of the genome, please finish the BLAST process before performing annotation")
 
-			int genesEntries = ModelGenesServices.countEntriesInGene(homologyDataContainer.getWorkspace().getName());
+//			int genesEntries = ModelGenesServices.countEntriesInGene(homologyDataContainer.getWorkspace().getName());
+			int sequencesNumber = ModelSequenceServices.countSequencesByType(homologyDataContainer.getWorkspace().getName(), SequenceType.PROTEIN);
 			int homologyEntries = AnnotationEnzymesServices.countEntriesInGeneHomology(homologyDataContainer.getWorkspace().getName());
 
-			if(genesEntries == homologyEntries) {
+			if(sequencesNumber == homologyEntries) {
 
 				int continueQuestion = CustomGUI.stopQuestion("continue?", "all annotations previously saved in the database will be lost, do you wish to continue?", new String[]{"yes", "no"});
 
@@ -182,7 +187,7 @@ public class EnzymesAutomaticAnnotation {
 
 							String confidenceLevel = listConfidenceLevel[k];
 
-							boolean reviewed = Boolean.valueOf((String) dataTable.getValueAt(i, 2));
+							boolean reviewed = Utilities.get_boolean_int_to_boolean((String) dataTable.getValueAt(i, 2));
 							String organism = (String) dataTable.getValueAt(i, 3);
 							double eValue = Double.valueOf((String) dataTable.getValueAt(i, 4));
 							String ecNumbers = (String)dataTable.getValueAt(i, 7);
