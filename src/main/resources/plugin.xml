@@ -16,7 +16,7 @@
 
 		<extension uid="aibench.workbench" name="aibench.workbench.view">
 			<icon-operation operation="operations.EnzymesAutomaticAnnotation.ID"
-				icon="icons/Lifecycle/clipboard.png" />
+				icon="icons/Lifecycle/workflow.png" />
 		</extension>
 		
 		<extension uid="aibench.workbench" name="aibench.workbench.view">
