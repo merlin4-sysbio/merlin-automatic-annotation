@@ -140,7 +140,7 @@ public class EnzymesAutomaticAnnotation {
 		catch (Exception e) {
 
 			e.printStackTrace();
-			Workbench.getInstance().error("An error occurred while performing the evaluation!");
+			Workbench.getInstance().error(e);
 		}
 	};
 
