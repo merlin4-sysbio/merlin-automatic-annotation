@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,9 +30,7 @@ import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceDataTable;
 import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceGenericDataTable;
 import pt.uminho.ceb.biosystems.merlin.core.utilities.Enumerators.SequenceType;
 import pt.uminho.ceb.biosystems.merlin.services.annotation.AnnotationEnzymesServices;
-import pt.uminho.ceb.biosystems.merlin.services.model.ModelGenesServices;
 import pt.uminho.ceb.biosystems.merlin.services.model.ModelSequenceServices;
-import pt.uminho.ceb.biosystems.merlin.services.model.ModelStoichiometryServices;
 import pt.uminho.ceb.biosystems.merlin.utilities.Utilities;
 import pt.uminho.ceb.biosystems.merlin.utilities.io.FileUtils;
 
@@ -359,8 +356,8 @@ public class EnzymesAutomaticAnnotation {
 //				System.out.println(row);
 //				System.out.println(this.locusTag.get(key));
 
-				String currentAnnotation = this.homologyDataContainer.getItemsList().get(1).get(row),
-						newAnnotation = this.ecMap.get(key);
+				String currentAnnotation = this.homologyDataContainer.getItemsList().get(1).get(row);
+				String newAnnotation = this.ecMap.get(key);
 
 				if(newAnnotation == null && this.confLevelMap.get(key).equals(ACCEPT_DEFAULT_NOTE))
 					newAnnotation = currentAnnotation;
