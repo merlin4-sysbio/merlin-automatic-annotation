@@ -24,12 +24,14 @@ import es.uvigo.ei.aibench.core.operation.annotation.Progress;
 import es.uvigo.ei.aibench.workbench.Workbench;
 import pt.uminho.ceb.biosystems.merlin.aibench.datatypes.annotation.AnnotationEnzymesAIB;
 import pt.uminho.ceb.biosystems.merlin.aibench.gui.CustomGUI;
+import pt.uminho.ceb.biosystems.merlin.aibench.utilities.AIBenchUtils;
 import pt.uminho.ceb.biosystems.merlin.aibench.utilities.MerlinUtils;
 import pt.uminho.ceb.biosystems.merlin.aibench.utilities.TimeLeftProgress;
 import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceDataTable;
 import pt.uminho.ceb.biosystems.merlin.core.datatypes.WorkspaceGenericDataTable;
 import pt.uminho.ceb.biosystems.merlin.core.utilities.Enumerators.SequenceType;
 import pt.uminho.ceb.biosystems.merlin.services.annotation.AnnotationEnzymesServices;
+import pt.uminho.ceb.biosystems.merlin.services.model.ModelGenesServices;
 import pt.uminho.ceb.biosystems.merlin.services.model.ModelSequenceServices;
 import pt.uminho.ceb.biosystems.merlin.utilities.Utilities;
 import pt.uminho.ceb.biosystems.merlin.utilities.io.FileUtils;
@@ -132,6 +134,7 @@ public class EnzymesAutomaticAnnotation {
 				throw new Exception("the BLAST process was not complete, please perform BLAST until all sequences are processed");			
 			}
 				
+			AIBenchUtils.updateView(this.homologyDataContainer.getWorkspace().getName(), AnnotationEnzymesAIB.class);
 
 		}
 		catch (Exception e) {
@@ -150,6 +153,8 @@ public class EnzymesAutomaticAnnotation {
 	public void applyPipelineOptions(Set<Integer> hits) throws Exception {
 
 		Map<Integer, Integer> sKeyToRow = homologyDataContainer.getTableRowIndex();
+		
+		Map<Integer, String> sKeyToQuery = AnnotationEnzymesServices.getGeneHomologyQueriesBySKey(homologyDataContainer.getWorkspace().getName());
 
 		long startTime = GregorianCalendar.getInstance().getTimeInMillis();
 
@@ -277,7 +282,7 @@ public class EnzymesAutomaticAnnotation {
 						name = "";
 
 					if(locus == null)
-						locus = "";
+						locus = sKeyToQuery.get(sKey);
 
 					geneName.put(sKey, name);
 					locusTag.put(sKey, locus);
