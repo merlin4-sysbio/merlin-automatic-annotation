@@ -1,5 +1,7 @@
 package pt.uminho.ceb.biosystems.merlin.merlin_automatic_annotation;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -116,7 +118,7 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 
 		workspaces = new String[projects.size()];
 		workspace = new JComboBox<>(projects.toArray(workspaces));
-
+		
 		this.homologyDataContainer = (AnnotationEnzymesAIB) AIBenchUtils.getEntity(workspace.getSelectedItem().toString(), AnnotationEnzymesAIB.class);
 		homologyDataContainer.getWorkspace().getTaxonomyID();
 		this.organism = homologyDataContainer.getWorkspace().getOrganismName();
@@ -959,6 +961,34 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 		gridBagConstraints.ipadx = 36;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		gridBagConstraints.insets = new java.awt.Insets(20, 29, 0, 0);
+		
+		this.workspace.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent evt) {
+
+				homologyDataContainer = (AnnotationEnzymesAIB) AIBenchUtils.getEntity(workspace.getSelectedItem().toString(), AnnotationEnzymesAIB.class);
+				homologyDataContainer.getWorkspace().getTaxonomyID();
+				organism = homologyDataContainer.getWorkspace().getOrganismName();
+				workspaceName = homologyDataContainer.getWorkspace().getName();
+				
+				getAllOrganisms();
+
+				initGUI();
+
+				initialVariables();
+
+				setVisible(true);		
+				//		this.setAlwaysOnTop(true);
+				toFront();
+				setTitle("automatic workflow");
+
+//				Utilities.centerOnOwner(this);
+//				pack();
+//				setLocationRelativeTo(null);
+				
+			}
+		});
+		
 		getContentPane().add(workspace, gridBagConstraints);
 
 
@@ -1372,6 +1402,7 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 
 		//    	new EvaluatorEA(blastDatabase, listInputColumn1, listInputColumn2, listInputColumn3, listInputColumn4, inputAcceptDefault, homologyDataContainer);
 
+		System.out.println(homologyDataContainer.getWorkspace().getName());
 
 		try {
 			ParamSpec[] paramsSpec = new ParamSpec[]{
