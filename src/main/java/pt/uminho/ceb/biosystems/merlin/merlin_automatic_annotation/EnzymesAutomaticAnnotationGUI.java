@@ -983,8 +983,8 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 				setTitle("automatic workflow");
 
 //				Utilities.centerOnOwner(this);
-//				pack();
-//				setLocationRelativeTo(null);
+				pack();
+				setLocationRelativeTo(null);
 				
 			}
 		});
