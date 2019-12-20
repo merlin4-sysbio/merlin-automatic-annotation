@@ -11,18 +11,24 @@
 		<extension uid="aibench.core" name="aibench.core.operation-definition"
 			class="pt.uminho.ceb.biosystems.merlin.merlin_automatic_annotation.EnzymesAutomaticAnnotation">
 			<operation-description name="automatic workflow"
-				path="10@annotation/100@enzymes/" uid="operations.EnzymesAutomaticAnnotation.ID" />
+				uid="operations.EnzymesAutomaticAnnotation.ID" />
+		</extension>
+		
+				<extension uid="aibench.core" name="aibench.core.operation-definition"
+			class="pt.uminho.ceb.biosystems.merlin.merlin_automatic_annotation.EnzymesAutomaticAnnotationWorkspaceSelector">
+			<operation-description name="automatic workflow"
+				path="10@annotation/100@enzymes/" uid="operations.EnzymesAutomaticAnnotationWorkspaceSelector.ID" />
 		</extension>
 
 		<extension uid="aibench.workbench" name="aibench.workbench.view">
-			<icon-operation operation="operations.EnzymesAutomaticAnnotation.ID"
+			<icon-operation operation="operations.EnzymesAutomaticAnnotationWorkspaceSelector.ID"
 				icon="icons/Lifecycle/workflow.png" />
 		</extension>
 		
-		<extension uid="aibench.workbench" name="aibench.workbench.view">
+<!-- 		<extension uid="aibench.workbench" name="aibench.workbench.view">
 			<gui-operation operation="operations.EnzymesAutomaticAnnotation.ID"
 			class="pt.uminho.ceb.biosystems.merlin.merlin_automatic_annotation.EnzymesAutomaticAnnotationGUI" />
-		</extension>
+		</extension> -->
 	</extensions>
 	
 </plugin>

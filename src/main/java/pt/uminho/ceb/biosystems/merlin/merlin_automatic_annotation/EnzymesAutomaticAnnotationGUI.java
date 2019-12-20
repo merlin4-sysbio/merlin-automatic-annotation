@@ -55,7 +55,6 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 	private javax.swing.JComboBox<String> jComboBox7;
 	private javax.swing.JComboBox<String> jComboBox8;
 	private javax.swing.JComboBox<String> jComboBox9;
-	private javax.swing.JComboBox<String> workspace;
 	private javax.swing.JLabel jLabel1;
 	private javax.swing.JLabel jLabel10;
 	private javax.swing.JLabel jLabel11;
@@ -66,7 +65,6 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 	private javax.swing.JLabel jLabel16;
 	private javax.swing.JLabel jLabel17;
 	private javax.swing.JLabel jLabel18;
-	private javax.swing.JLabel jLabel19;
 	private javax.swing.JLabel jLabel2;
 	private javax.swing.JLabel jLabel3;
 	private javax.swing.JLabel jLabel4;
@@ -110,16 +108,15 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 	private String[] workspaces;
 	private String workspaceName;
 
-	public EnzymesAutomaticAnnotationGUI() {
+	public EnzymesAutomaticAnnotationGUI(String workspace) {
 
 		super(Workbench.getInstance().getMainFrame());
 
 		List<String> projects = AIBenchUtils.getProjectNames();
 
 		workspaces = new String[projects.size()];
-		workspace = new JComboBox<>(projects.toArray(workspaces));
 		
-		this.homologyDataContainer = (AnnotationEnzymesAIB) AIBenchUtils.getEntity(workspace.getSelectedItem().toString(), AnnotationEnzymesAIB.class);
+		this.homologyDataContainer = (AnnotationEnzymesAIB) AIBenchUtils.getEntity(workspace, AnnotationEnzymesAIB.class);
 		homologyDataContainer.getWorkspace().getTaxonomyID();
 		this.organism = homologyDataContainer.getWorkspace().getOrganismName();
 		this.workspaceName = homologyDataContainer.getWorkspace().getName();
@@ -206,7 +203,6 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 		jButtonApply = new javax.swing.JButton();
 		jButtonCancel = new javax.swing.JButton();
 		jCheckDefaultAnnotation = new javax.swing.JCheckBox();
-		jLabel19 = new javax.swing.JLabel();
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		getContentPane().setLayout(new java.awt.GridBagLayout());
@@ -962,44 +958,38 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
 		gridBagConstraints.insets = new java.awt.Insets(20, 29, 0, 0);
 		
-		this.workspace.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent evt) {
-
-				homologyDataContainer = (AnnotationEnzymesAIB) AIBenchUtils.getEntity(workspace.getSelectedItem().toString(), AnnotationEnzymesAIB.class);
-				homologyDataContainer.getWorkspace().getTaxonomyID();
-				organism = homologyDataContainer.getWorkspace().getOrganismName();
-				workspaceName = homologyDataContainer.getWorkspace().getName();
-				
-				getAllOrganisms();
-
-				initGUI();
-
-				initialVariables();
-
-				setVisible(true);		
-				//		this.setAlwaysOnTop(true);
-				toFront();
-				setTitle("automatic workflow");
-
-//				Utilities.centerOnOwner(this);
-				pack();
-				setLocationRelativeTo(null);
-				
-			}
-		});
+//		this.workspace.addActionListener(new ActionListener() {
+//
+//			public void actionPerformed(ActionEvent evt) {
+//
+//				homologyDataContainer = (AnnotationEnzymesAIB) AIBenchUtils.getEntity(workspace.getSelectedItem().toString(), AnnotationEnzymesAIB.class);
+//				homologyDataContainer.getWorkspace().getTaxonomyID();
+//				organism = homologyDataContainer.getWorkspace().getOrganismName();
+//				workspaceName = homologyDataContainer.getWorkspace().getName();
+//				
+//				getAllOrganisms();
+//
+//				initGUI();
+//
+//				initialVariables();
+//
+//				setVisible(true);		
+//				//		this.setAlwaysOnTop(true);
+//				toFront();
+//				setTitle("automatic workflow");
+//
+////				Utilities.centerOnOwner(this);
+//				pack();
+//				setLocationRelativeTo(null);
+//				
+//			}
+//		});
 		
-		getContentPane().add(workspace, gridBagConstraints);
-
-
-		jLabel19.setText("workspace");
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 4;
 		gridBagConstraints.gridy = 27;
 		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
 		gridBagConstraints.insets = new java.awt.Insets(22, 33, 0, 0);
-		getContentPane().add(jLabel19, gridBagConstraints);
-
 
 		jComboBox2.setPrototypeDisplayValue("text here");
 		jComboBox4.setPrototypeDisplayValue("text here");
@@ -1402,7 +1392,6 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 
 		//    	new EvaluatorEA(blastDatabase, listInputColumn1, listInputColumn2, listInputColumn3, listInputColumn4, inputAcceptDefault, homologyDataContainer);
 
-		System.out.println(homologyDataContainer.getWorkspace().getName());
 
 		try {
 			ParamSpec[] paramsSpec = new ParamSpec[]{
