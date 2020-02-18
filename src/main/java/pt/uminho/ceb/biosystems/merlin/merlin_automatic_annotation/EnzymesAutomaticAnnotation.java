@@ -35,7 +35,7 @@ import pt.uminho.ceb.biosystems.merlin.services.model.ModelSequenceServices;
 import pt.uminho.ceb.biosystems.merlin.utilities.Utilities;
 import pt.uminho.ceb.biosystems.merlin.utilities.io.FileUtils;
 
-@Operation(name="enzymes automatic annotation", description="enzymes automatic annotation")
+@Operation(name="EnzymesAutomaticAnnotation", description="enzymes automatic annotation")
 public class EnzymesAutomaticAnnotation {
 
 	private static final String ACCEPT_DEFAULT_NOTE = "default annotation";
@@ -63,10 +63,10 @@ public class EnzymesAutomaticAnnotation {
 	private int locusTagColumn = 1;
 	private int geneNameColumn = 3;
 
-	@Port(direction=Direction.INPUT, name="blastDatabase", order=1)
-	public void setEcCurated(String blastDatabase){
+	@Port(direction=Direction.INPUT, name="blastDatabaseName", order=1)
+	public void setEcCurated(String blastDatabaseName){
 
-		this.blastDatabase = blastDatabase;
+		this.blastDatabase = blastDatabaseName;
 	};
 
 	@Port(direction=Direction.INPUT, name="inputColumn1", order=2)
@@ -112,9 +112,11 @@ public class EnzymesAutomaticAnnotation {
 			//			ModelGenesServices.countNumberOfGeneIDs();
 			//			AnnotationEnzymesServices.countNumberOfGeneHomologyEntries(); If same -> continue; else throw("the number of enzymes processed during the enzymes homology search is different from the total entries of the genome, please finish the BLAST process before performing annotation")
 
-//			int genesEntries = ModelGenesServices.countEntriesInGene(homologyDataContainer.getWorkspace().getName());
+			//			int genesEntries = ModelGenesServices.countEntriesInGene(homologyDataContainer.getWorkspace().getName());
 			int sequencesNumber = ModelSequenceServices.countSequencesByType(homologyDataContainer.getWorkspace().getName(), SequenceType.PROTEIN);
 			int homologyEntries = AnnotationEnzymesServices.countEntriesInGeneHomology(homologyDataContainer.getWorkspace().getName());
+			
+			//Map<String, Set<Integer>> database = this.homologyDataContainer.getBlastGeneDatabase();
 
 			if(sequencesNumber == homologyEntries) {
 
@@ -122,7 +124,7 @@ public class EnzymesAutomaticAnnotation {
 
 				if(continueQuestion==0) {
 
-					AnnotationEnzymesServices.deleteFromHomologyDataByDatabaseID(this.homologyDataContainer.getWorkspace().getName(), blastDatabase);
+					AnnotationEnzymesServices.deleteFromHomologyDataByDatabaseID(this.homologyDataContainer.getWorkspace().getName(), this.blastDatabase);
 
 					Set<Integer> hits = getAllHits();
 
@@ -132,7 +134,7 @@ public class EnzymesAutomaticAnnotation {
 			else {
 				throw new Exception("the BLAST process was not complete, please perform BLAST until all sequences are processed");			
 			}
-				
+
 			AIBenchUtils.updateView(this.homologyDataContainer.getWorkspace().getName(), AnnotationEnzymesAIB.class);
 
 		}
@@ -152,7 +154,7 @@ public class EnzymesAutomaticAnnotation {
 	public void applyPipelineOptions(Set<Integer> hits) throws Exception {
 
 		Map<Integer, Integer> sKeyToRow = homologyDataContainer.getTableRowIndex();
-		
+
 		Map<Integer, String> sKeyToQuery = AnnotationEnzymesServices.getGeneHomologyQueriesBySKey(homologyDataContainer.getWorkspace().getName());
 
 		long startTime = GregorianCalendar.getInstance().getTimeInMillis();
@@ -290,7 +292,7 @@ public class EnzymesAutomaticAnnotation {
 
 					if(sKey != null) {
 
-						ecMap.put(sKey, "");
+						//ecMap.put(sKey, "");
 						confLevelMap.put(sKey, ERROR_MESSAGE);
 					}
 				}
@@ -311,15 +313,22 @@ public class EnzymesAutomaticAnnotation {
 
 		try {
 
+			String locusT = null;
 			long startTime = GregorianCalendar.getInstance().getTimeInMillis();
 
 			progress.setTime(0, 0, 0, "saving results");
 
-			for (int sKey : ecMap.keySet()) {
-				
-				AnnotationEnzymesServices.insertHomologyData(homologyDataContainer.getWorkspace().getName(), 
-						sKey, locusTag.get(sKey), geneName.get(sKey), null, ecMap.get(sKey), true, null, confLevelMap.get(sKey));
-				
+			if(locusTag != null) {
+				for (int sKey : locusTag.keySet()) {
+
+					System.out.print(sKey);
+					System.out.print("\t"+locusTag.containsKey(sKey));
+					locusT = locusTag.get(sKey);
+					System.out.println("\t"+locusT);
+					
+					AnnotationEnzymesServices.insertHomologyData(homologyDataContainer.getWorkspace().getName(), 
+							sKey, locusT, geneName.get(sKey), null, ecMap.get(sKey), true, null, confLevelMap.get(sKey));
+				}
 			}
 
 			////////////
@@ -356,9 +365,9 @@ public class EnzymesAutomaticAnnotation {
 
 				Integer row = homologyDataContainer.getTableRowIndex().get(key);
 
-//
-//				System.out.println(row);
-//				System.out.println(this.locusTag.get(key));
+				//
+				//				System.out.println(row);
+				//				System.out.println(this.locusTag.get(key));
 
 				String currentAnnotation = this.homologyDataContainer.getItemsList().get(1).get(row);
 				String newAnnotation = this.ecMap.get(key);

@@ -13,38 +13,46 @@ import es.uvigo.ei.aibench.core.operation.annotation.Direction;
 import es.uvigo.ei.aibench.core.operation.annotation.Operation;
 import es.uvigo.ei.aibench.core.operation.annotation.Port;
 import es.uvigo.ei.aibench.workbench.Workbench;
-import pt.uminho.ceb.biosystems.merlin.entities.annotation.enzymes.EnzymesAnnotationGeneHomology;
 import pt.uminho.ceb.biosystems.merlin.gui.datatypes.WorkspaceAIB;
 import pt.uminho.ceb.biosystems.merlin.gui.jpanels.CustomGUI;
+import pt.uminho.ceb.biosystems.merlin.gui.utilities.AIBenchUtils;
 import pt.uminho.ceb.biosystems.merlin.gui.utilities.TimeLeftProgress;
 import pt.uminho.ceb.biosystems.merlin.services.annotation.AnnotationEnzymesServices;
 
 
-@Operation(name="Select workspace",description="Select a workspace to run automatic workflow")
+@Operation(name="automaticWorkflowGUI", description="")
 public class EnzymesAutomaticAnnotationWorkspaceSelector implements PropertyChangeListener {
 
 	private long startTime;
 	private String message;
 	private AtomicBoolean cancel = new AtomicBoolean(false);
 	private int dataSize;
+	private WorkspaceAIB project;
+	private String blastDatabase;
 	public TimeLeftProgress progress = new TimeLeftProgress();
 	final static Logger logger = LoggerFactory.getLogger(EnzymesAutomaticAnnotationWorkspaceSelector.class);
 
+	
+	@Port(direction=Direction.INPUT, name="Workspace",description="select the new model workspace", order = 1)
+	public void setNewProject(String projectName) throws Exception {
+		this.project = AIBenchUtils.getProject(projectName);
 
-	@Port(direction=Direction.INPUT, name="workspace",description="select workspace",//validateMethod="checkProject",
-			order=1)
-	public void setProject(WorkspaceAIB project) {
+	}
 
+	@Port(direction=Direction.INPUT, name="Blast Database",description="", order = 2)
+	public void setBlastDatabase (String blastDatabase){
+		this.blastDatabase = blastDatabase;
 		this.startTime = GregorianCalendar.getInstance().getTimeInMillis();
 		this.cancel = new AtomicBoolean(false);
 
 		
 		try {
-				int annotationGeneCount = AnnotationEnzymesServices.countEntriesInGeneHomology(project.getName());
+				int annotationGeneCount = AnnotationEnzymesServices.countEntriesInGeneHomology(this.project.getName());
 				
 				if(!this.cancel.get()) {
 					if(annotationGeneCount>0)
-						new EnzymesAutomaticAnnotationGUI(project.getName());
+						new EnzymesAutomaticAnnotationGUI(project.getName(), this.blastDatabase);
+					
 					else {
 						Workbench.getInstance().error("Please make sure you have annotation results for the selected workspace");
 					}

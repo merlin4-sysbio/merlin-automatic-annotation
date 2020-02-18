@@ -88,7 +88,7 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 	private String[] genus;
 	private String organism = "";
 	private String organismGenus;
-	private String blastDatabase;
+	private String blastDatabaseName;
 	private String eValueBlast;
 
 	private int indexOrganism = -1;
@@ -105,19 +105,16 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 	private List<Double> listInputColumn3 = new ArrayList<>(); //TextField e-value
 	private List<Boolean> listInputColumn4 = new ArrayList<>(); //CheckBox reviewed
 
-	private String[] workspaces;
 	private String workspaceName;
 
-	public EnzymesAutomaticAnnotationGUI(String workspace) {
+	public EnzymesAutomaticAnnotationGUI(String workspace, String blastDatabaseName) {
 
 		super(Workbench.getInstance().getMainFrame());
-
-		List<String> projects = AIBenchUtils.getProjectNames();
-
-		workspaces = new String[projects.size()];
 		
 		this.homologyDataContainer = (AnnotationEnzymesAIB) AIBenchUtils.getEntity(workspace, AnnotationEnzymesAIB.class);
+		this.blastDatabaseName = blastDatabaseName;
 		homologyDataContainer.getWorkspace().getTaxonomyID();
+		//homologyDataContainer.setBlastGeneDatabase(blastGeneDatabase);
 		this.organism = homologyDataContainer.getWorkspace().getOrganismName();
 		this.workspaceName = homologyDataContainer.getWorkspace().getName();
 		
@@ -1395,7 +1392,7 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 
 		try {
 			ParamSpec[] paramsSpec = new ParamSpec[]{
-					new ParamSpec("blastDatabase", String.class, blastDatabase, null),
+					new ParamSpec("blastDatabase", String.class, blastDatabaseName, null),
 					new ParamSpec("listInputColumn1", List.class, listInputColumn1, null),
 					new ParamSpec("listInputColumn2", List.class, listInputColumn2, null),
 					new ParamSpec("listInputColumn3", List.class, listInputColumn3, null),
@@ -1448,11 +1445,7 @@ public class EnzymesAutomaticAnnotationGUI extends javax.swing.JDialog implement
 
 		try {
 
-			this.blastDatabase = AnnotationEnzymesServices.getLastestUsedBlastDatabase(this.workspaceName);
-			
-			this.eValueBlast = AnnotationEnzymesServices.getBlastEValue(this.workspaceName, this.blastDatabase).toString();
-
-
+			this.eValueBlast = AnnotationEnzymesServices.getBlastEValue(this.workspaceName, this.blastDatabaseName).toString();
 			String[] result = AnnotationEnzymesServices.getAllOrganisms(this.workspaceName);
 			String[] result2 = AnnotationEnzymesServices.getAllGenus(this.workspaceName);
 			
