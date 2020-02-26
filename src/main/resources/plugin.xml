@@ -1,7 +1,7 @@
 <plugin start="true">
 	<uid>pt.uminho.ceb.biosystems.merlin.automatic.annotation</uid>
 	<name>merlin-automatic-annotation</name>
-	<version>4.0.05</version>
+	<version>4.0.06</version>
 	
 	<dependencies>
 		<dependency uid="merlin"/>
