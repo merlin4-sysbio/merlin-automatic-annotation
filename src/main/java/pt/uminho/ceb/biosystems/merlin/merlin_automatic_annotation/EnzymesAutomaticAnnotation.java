@@ -193,7 +193,7 @@ public class EnzymesAutomaticAnnotation {
 							boolean reviewed = Utilities.get_boolean_int_to_boolean((String) dataTable.getValueAt(i, 2));
 							String organism = (String) dataTable.getValueAt(i, 3);
 							double eValue = Double.valueOf((String) dataTable.getValueAt(i, 4));
-							String ecNumbers = (String)dataTable.getValueAt(i, 7);
+							String ecNumbers = (String)dataTable.getValueAt(i, 11);
 
 							String firstInput = inputColumn1.get(k);
 							String secondInput = inputColumn2.get(k).trim();
